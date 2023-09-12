@@ -6,5 +6,8 @@ export const ApiAbsensi = {
     },
     postAbsensi : (data:any) =>{
         return api.post(`/ptk/mobile/absensi`,data)
+    },
+    getRiwayat : (data:any)=>{
+        return api.post(`/ptk/mobile/absensi/filter/absensi`,data)
     }
 }

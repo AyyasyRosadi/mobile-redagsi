@@ -1,6 +1,7 @@
 export interface Absensi {
     loadingAbsensi : boolean
     allAbsensi : any
+    riwayatAbsensi : any
     msgAbsensi : any
     status : string
     hasAbsen : string

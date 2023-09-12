@@ -9,9 +9,9 @@ type TField = {
 export default function FieldTitle({title,value}:TField) {
   return (
     <View className='flex flex-row mb-1'>
-    <Text className='w-[20%] uppercase'>{title}</Text>
-    <Text className='w-[5%]'>:</Text>
-    <Text className='w-[60%] uppercase'>{value}</Text>
+    <Text className='w-[23%] uppercase'>{title}</Text>
+    <Text className='w-[5%] my-auto'>:</Text>
+    <Text className='w-[57%] uppercase'>{value}</Text>
   </View>
 )
 }

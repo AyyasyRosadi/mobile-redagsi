@@ -26,7 +26,7 @@ export default function Absensi() {
   const [hasPulang, setHasPulang] = useState<any>()
   const { allAbsensi, loadingAbsensi, hasAbsen, msgAbsensi } = useSelector((state: RootState) => state.absensi)
   const absen = () => {
-    dispatch(addAbsensi({ nupy: "19890720141156" }))
+    dispatch(addAbsensi({ nupy: "19860420101056" }))
     setShowButton(false)
     setShowMsg(true)
     setTimeout(() => {
@@ -76,7 +76,6 @@ export default function Absensi() {
         }
       } else if (Platform.OS === 'ios') {
         data = await calculateLocation.convertLatLongToKm(lang, long, location_?.coords?.latitude, location_?.coords?.longitude)
-        // console.log(data)
         if (data <= 0.3) {
           setText('Berada dalam Lokasi')
         } else {
@@ -89,7 +88,7 @@ export default function Absensi() {
   useEffect(() => {
     dispatch(absensiActions.clearAbsensi())
     if (!danger) {
-      dispatch(getAllAbsensi("19890720141156"))
+      dispatch(getAllAbsensi("19860420101056"))
     }
   }, [danger, hasAbsen])
   useEffect(() => {

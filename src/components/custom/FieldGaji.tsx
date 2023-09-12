@@ -4,13 +4,13 @@ import React from 'react'
 type TField = {
     title: string,
     value: string | number
-    id? : number
+    key? : any
     list? : boolean
 }
 
-export default function FieldGaji({ title, value,id,list }: TField) {
+export default function FieldGaji({ title, value,key,list }: TField) {
     return (
-        <View key={id} className='flex flex-row mb-1'>
+        <View key={key} className='flex flex-row mb-1'>
             <Text className='w-[3%]'>{list ? "-" : ""}</Text>
             <Text className='w-[45%] uppercase'>{title}</Text>
             <Text className='w-[3%]'>:</Text>

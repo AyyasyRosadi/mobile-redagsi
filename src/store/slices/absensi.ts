@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllAbsensi,addAbsensi } from "../actions/absensi";
+import { getAllAbsensi,addAbsensi, getAllRiwayat } from "../actions/absensi";
 import { Absensi } from "../interfaces";
 
 const initialState : Absensi = {
     allAbsensi : {},
     loadingAbsensi : false,
+    riwayatAbsensi : {},
     msgAbsensi : "",
     status : "IDDLE",
     hasAbsen: "WAITING"
@@ -33,7 +34,22 @@ export const absensiStore = createSlice({
         })
         .addCase(getAllAbsensi.rejected,(state,action)=>{
             state.loadingAbsensi = false
-            state.allAbsensi = action.payload
+            state.allAbsensi = []
+            state.status = "ERROR"
+        })
+        .addCase(getAllRiwayat.pending,(state)=>{
+            state.loadingAbsensi = true
+            state.status = "PENDING"
+
+        })
+        .addCase(getAllRiwayat.fulfilled,(state,action)=>{
+            state.loadingAbsensi = false
+            state.riwayatAbsensi = action.payload
+            state.status = "SUCCES"
+        })
+        .addCase(getAllRiwayat.rejected,(state,action)=>{
+            state.loadingAbsensi = false
+            state.riwayatAbsensi = []
             state.status = "ERROR"
         })
         .addCase(addAbsensi.pending,(state)=>{

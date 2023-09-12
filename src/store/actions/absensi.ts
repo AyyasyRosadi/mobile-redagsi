@@ -18,6 +18,21 @@ export const getAllAbsensi = createAsyncThunk(
     }
 )
 
+export const getAllRiwayat = createAsyncThunk(
+    'ptk/absensi/riwayat',
+    async(data:any,{rejectWithValue})=>{
+        try{
+            const res = await ApiAbsensi.getRiwayat(data)
+            if(res.status === 200){
+                return res.data
+            }
+        }
+        catch(err:any){
+            return rejectWithValue(err.response.data.msg)
+        }
+    }
+)
+
 export const addAbsensi = createAsyncThunk(
     'ptk/absensi/post',
     async(data:AddAbsensi,{rejectWithValue})=>{
