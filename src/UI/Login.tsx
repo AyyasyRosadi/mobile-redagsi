@@ -3,26 +3,52 @@ import React, { useEffect, useState } from 'react'
 import masjid from "../assets/masjid.png";
 import InputField from '../components/fields/InputFields';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppThunkDispatch, RootState } from '../store';
+import { login } from '../store/actions/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authActions } from '../store/slices/auth';
+import Loader from '../templates/Loader';
 
 export default function Login() {
+    const dispatch = useDispatch<AppThunkDispatch>()
+    const {loadingAuth,token,username,lembaga,msgAuth,status,nama} = useSelector((state:RootState)=>state.auth)
     const navigation = useNavigation<any>()
-    const [username, setUsername] = useState<any>("");
+    const [name, setName] = useState<any>("");
     const [pwd, setPwd] = useState("");
     const [secure, setSecure] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [status, setStatus] = useState("ERROR")
-    const login = () => {
-        console.log({ noHp: username, pwd: pwd })
-        navigation.navigate("Home")
+    const isLogin = () => {
+        dispatch(login({username:name,password:pwd,sistem:"mobile"}))
     }
     useEffect(() => {
         if (status === "ERROR") {
             setShowAlert(true);
+            setTimeout(()=>{
+                setShowAlert(false)
+                dispatch(authActions.clearStatus())
+            },2000)    
         }
     }, [status]);
+    useEffect(()=>{
+        const setStorage = async()=>{
+            try{
+                if(token !== "" && username !== ""){
+                    let data = {token:token,nupy:username,nama:nama}
+                    await AsyncStorage.setItem("absensi",JSON.stringify(data))
+                    // navigation.navigate("Home",{status:false})
+                }
+            }
+            catch(err){
+                throw err
+            }
+        }
+        setStorage()
+    },[loadingAuth,])
     return (
         <KeyboardAvoidingView behavior="height" className="flex h-screen">
-            <View className="h-[40%] ">
+            <Loader show={loadingAuth}/>
+            <View className="h-[40%]">
                 <View className="bg-black absolute top-0 h-[100%] w-[120%] -ml-[10%] z-10 opacity-50 rounded-b-[90px]"></View>
                 <Image
                     source={masjid}
@@ -36,9 +62,9 @@ export default function Login() {
                     <View>
                         <View className="relative">
                             <InputField
-                                value={username}
+                                value={name}
                                 color="bg-slate-100 border border-slate-100 px-2"
-                                set={setUsername}
+                                set={setName}
                                 placeholder="username"
                             />
                         </View>
@@ -61,13 +87,12 @@ export default function Login() {
                                         Sembunyikan
                                     </Text>
                                 )}
-                                {/* <Image className="w-5 h-5" source={secure ? Close : Open} /> */}
                             </View>
                         </View>
-                        <Text className={`text-center mt-[5%] text-md text-[#c5a231] ${showAlert ? "block" : "hidden"}`}>No HP atau Password Salah</Text>
+                        <Text className={`text-center mt-[5%] text-md text-[#c5a231] ${showAlert ? "block" : "hidden"}`}>Username atau Password Salah</Text>
                     </View>
                     <View
-                        onTouchStart={login}
+                        onTouchStart={isLogin}
                         className="bg-[#dbad17] rounded-xl w-full my-2 py-2"
                     >
                         <Text className="mx-auto py-3 text-white font-extrabold">

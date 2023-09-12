@@ -10,15 +10,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppThunkDispatch, RootState } from '../store';
 import { getAllRiwayat } from '../store/actions/absensi';
 import Loader from '../templates/Loader';
+import { absensiActions } from '../store/slices/absensi';
+import "moment/locale/id"
 // import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 
-export default function Riwayat() {
+export default function Riwayat({navigation}) {
     const dispatch = useDispatch<AppThunkDispatch>()
+    const {username} = useSelector((state:RootState)=>state.auth)
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
     const [showPickerFrom, setShowPickerFrom] = useState(false)
     const [showPickerTo, setShowPickerTo] = useState(false)
+    const [filter,setFilter] = useState(false)
     const { riwayatAbsensi,loadingAbsensi } = useSelector((state: RootState) => state.absensi)
 
     const changeFromDate = (event, selectedDate) => {
@@ -36,8 +40,17 @@ export default function Riwayat() {
         setShowPickerTo(true)
     }
     useEffect(() => {
-        dispatch(getAllRiwayat({ nupy: "19890720141156", start: moment(fromDate).format("YYYY-MM-DD"), end: moment(toDate).format("YYYY-MM-DD") }))
-    }, [fromDate, toDate])
+        if(fromDate && toDate && filter && username !== ""){
+            dispatch(getAllRiwayat({ nupy: username, start: moment(fromDate).format("YYYY-MM-DD"), end: moment(toDate).format("YYYY-MM-DD") }))
+            setFilter(false)
+        }
+    }, [fromDate, toDate,username,filter])
+    useEffect(()=>{
+        const focusHandler = navigation.addListener("focus", async () => {
+            dispatch(absensiActions.clearRiwayat())
+        })
+        return focusHandler
+    },[navigation])
     return (
         <SafeAreaView>
             <Loader show={loadingAbsensi} />
@@ -56,6 +69,9 @@ export default function Riwayat() {
                                     <Text className='text-sky-700'>{moment(toDate).format("DD-MMMM")}</Text>
                                 </View>
                             </View>
+                            <View className='mt-2 border rounded-lg border-sky-700 p-2' onTouchStart={()=>setFilter(true)}>
+                                <Text className='text-center'>Filter</Text>
+                            </View>
                             {showPickerFrom ?
                                 <DateTimePicker id='fromDate' value={fromDate} mode="date" onChange={changeFromDate} />
                                 :
@@ -71,7 +87,7 @@ export default function Riwayat() {
                             Object.keys(riwayatAbsensi).length !== 0 ?
                                 riwayatAbsensi?.absensi_mobile_users.map((d: any, i: any) => (
                                     <View key={i}>
-                                        <CardRiwayat tanggal={moment(d.stat).format("DD MMMM YYYY")} masuk={moment(d.start).format("HH:mm:ss")} pulang={moment(d.end).format("HH:mm:ss")} />
+                                        <CardRiwayat tanggal={moment(d.stat).format("dddd DD MMMM YYYY")} masuk={moment(d.start).format("HH:mm:ss")} pulang={moment(d.end).format("HH:mm:ss")} />
                                     </View>
                                 ))
                                 :
@@ -82,7 +98,7 @@ export default function Riwayat() {
                     </View>
                 </ScrollView>
             </View>
-            <Menu index={3} />
+            <Menu index={2} />
         </SafeAreaView >
     )
 }

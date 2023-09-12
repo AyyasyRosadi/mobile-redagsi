@@ -39,6 +39,7 @@ export const addAbsensi = createAsyncThunk(
         try{
             const res = await ApiAbsensi.postAbsensi(data)
             if(res.status === 200){
+                console.log(res.data.msg)
                 return res.data
             }
         }

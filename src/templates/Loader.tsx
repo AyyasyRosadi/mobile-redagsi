@@ -12,8 +12,8 @@ const Loader = ({ show }: TLoader) => {
         setOpen(show)
     }, [show])
     return (
-        <View className={`absolute bg-slate-800 top-0 opacity-50 h-[120vh] z-50 w-full flex justify-center items-center ${open ? "block" : "hidden"}`}>
-            <ActivityIndicator size="large" color="#00ff00" />
+        <View className={`absolute bg-slate-200 top-0 opacity-50 h-[120vh] z-20 w-full flex justify-center items-center ${open ? "block" : "hidden"}`}>
+            <ActivityIndicator size="large" color="#dbad17" style={{transform:[{scaleX:2},{scaleY:2}]}} />
         </View>
     )
 }

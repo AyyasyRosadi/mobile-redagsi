@@ -8,8 +8,8 @@ const Alert = ({show,close,msg}:TAlert) => {
         setOpen(show)
     }, [show])
     return (
-        <View className={`absolute top-0 h-[100vh] z-50 w-full flex justify-center items-center ${open ? "block" : "hidden"}`}>
-            <View className="bg-sky-500 rounded-md mx-2 w-[80vw] h-14 opacity-100 flex justify-center items-center shadow-md">
+        <View className={`absolute top-0 h-[100vh] z-50 w-full flex justify-end items-center ${open ? "block" : "hidden"}`}>
+            <View className="bg-sky-500 rounded-md mx-2 w-[85vw] mb-[10vh] h-14 opacity-100 flex justify-center items-center shadow-md">
                 <Text className='text-white'>{msg}</Text>
             </View>
         </View>

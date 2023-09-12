@@ -16,10 +16,21 @@ export interface Gaji {
 }
 
 export interface GetGajiByBulan {
-    nupy:string,
+    nupy:string
     bulan:string
 }
 
 export interface AddAbsensi {
     nupy : string
+}
+
+export interface Auth {
+    token : string
+    username : string
+    role : string
+    lembaga : string
+    nama : string
+    loadingAuth : boolean
+    msgAuth : any
+    status : string
 }

@@ -17,20 +17,27 @@ import { Picker, PickerIOS } from '@react-native-picker/picker'
 import Loader from '../templates/Loader'
 import { gajiActions } from '../store/slices/gaji'
 
-export default function Gaji() {
+export default function Gaji({navigation}) {
+  const {username} = useSelector((state:RootState)=>state.auth)
   const dispatch = useDispatch<AppThunkDispatch>()
   const { allGaji, bulanPenggajian, loadingGaji } = useSelector((state: RootState) => state.gaji)
-  const [getBulan, setGetBulan] = useState<any>(null)
+  const [getBulan, setGetBulan] = useState<any>("")
   const date = new Date()
+  useEffect(()=>{
+    dispatch(getBulanPenggajian())
+  },[])
   useEffect(() => {
-    dispatch(gajiActions.clearGaji())
-    if (getBulan !== null) {
-      dispatch(getGaji({ nupy: "19890120111073", bulan: getBulan }))
+    if (getBulan !== "") {
+      dispatch(getGaji({ nupy: username, bulan: getBulan }))
     }
   }, [getBulan])
   useEffect(() => {
-    dispatch(getBulanPenggajian())
-  }, [])
+    const focusHandler = navigation.addListener("focus", async () => {
+      setGetBulan("")
+      dispatch(gajiActions.clearGaji())  
+    })
+    return focusHandler
+  },[navigation])
   return (
     <SafeAreaView>
       <Loader show={loadingGaji} />
@@ -40,7 +47,6 @@ export default function Gaji() {
           <View className='h-full py-[10%] flex flex-col space-y-[3%] mb-[15vh]'>
             <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
               <View className={`flex bg-white border ${Platform.OS === "android" ? "rounded-lg" : "rounded-none p-2"}`}>
-
                 {Platform.OS === "android" ?
                   <Picker
                     selectedValue={getBulan}
@@ -53,7 +59,7 @@ export default function Gaji() {
                       <Picker.Item key={id} label={optionsBulan[d.index_bulan].label} value={d.bulan} />
                     ))
                       :
-                      <Picker.Item key={0} label={""} value={""} />
+                      <Picker.Item label={""} value={""} />
                     }
                   </Picker>
                   :
@@ -68,14 +74,14 @@ export default function Gaji() {
                       <Picker.Item key={id} label={optionsBulan[d.index_bulan].label} value={d.bulan} />
                     ))
                       :
-                      <Picker.Item key={0} label={""} value={""} />
+                      <Picker.Item label={""} value={""} />
                     }
                   </PickerIOS>
 
                 }
               </View>
             </View>
-            {getBulan !== "" && getBulan !== null ?
+            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 && Object.keys(allGaji).length !== 0 ?
               <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
                 <View className='flex flex-row space-x-3'>
                   <View className='w-[20%]'>
@@ -102,7 +108,7 @@ export default function Gaji() {
               :
               <></>
             }
-            {getBulan !== "" && getBulan !== null ?
+            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 ?
               <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
                 <View className='flex flex-row space-x-3'>
                   <View className='w-[15%]'>
@@ -150,7 +156,7 @@ export default function Gaji() {
               :
               <></>
             }
-            {getBulan !== "" && getBulan !== null ?
+            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 ?
               <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
                 <View className='flex flex-row space-x-3'>
                   <View className='w-[15%]'>
@@ -202,7 +208,7 @@ export default function Gaji() {
           </View>
         </ScrollView>
       </View >
-      <Menu index={2} />
+      <Menu index={1} />
     </SafeAreaView >
   )
 }

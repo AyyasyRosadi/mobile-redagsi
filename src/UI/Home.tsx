@@ -10,14 +10,21 @@ import { addAbsensi, getAllAbsensi } from '../store/actions/absensi';
 import moment from 'moment';
 import Alert from '../templates/Alert';
 import { absensiActions } from '../store/slices/absensi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute } from '@react-navigation/native';
+import { authActions } from '../store/slices/auth';
+import { logout } from '../store/actions/auth';
+import Loader from '../templates/Loader';
 
-const lang = -8.6560562
-const long = 116.5396862
+const lang = -8.5896871
+const long = 116.0925219
 
-export default function Absensi() {
+export default function Absensi({ navigation }) {
   const dispatch = useDispatch<AppThunkDispatch>()
+  const { username } = useSelector((state: RootState) => state.auth)
+  const route = useRoute<any>()
   const [location, setLocation] = useState(null);
-  const [danger, setDanger] = useState<any>()
+  const [danger, setDanger] = useState<any>(null)
   const [showButton, setShowButton] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [text, setText] = useState('Waiting...')
@@ -26,13 +33,18 @@ export default function Absensi() {
   const [hasPulang, setHasPulang] = useState<any>()
   const { allAbsensi, loadingAbsensi, hasAbsen, msgAbsensi } = useSelector((state: RootState) => state.absensi)
   const absen = () => {
-    dispatch(addAbsensi({ nupy: "19860420101056" }))
+    dispatch(addAbsensi({ nupy: username }))
     setShowButton(false)
-    setShowMsg(true)
-    setTimeout(() => {
-      setShowMsg(false)
-    }, 2000)
   }
+  useEffect(() => {
+    if (hasAbsen === "SUCCES") {
+      setShowMsg(true)
+      setTimeout(() => {
+        setShowMsg(false)
+        dispatch(absensiActions.clearAbsensi())
+      }, 2000)
+    }
+  }, [hasAbsen])
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date())
@@ -46,8 +58,6 @@ export default function Absensi() {
         setErrorMsg('Permission to access location was denied');
         return;
       }
-
-
       let location_: SetStateAction<any> = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Highest, timeInterval: 1000
       });
@@ -66,10 +76,10 @@ export default function Absensi() {
         } else {
           data = await calculateLocation.convertLatLongToKm(lang, long, location_?.coords?.latitude, location_?.coords?.longitude)
           if (data <= 0.3) {
-            setText('Berada dalam Lokasi')
+            setText('Anda Berada di Area Pondok')
             setDanger(false)
           } else {
-            setText('titik berada diluar Radius')
+            setText('Anda Berada di Luar Area Pondok')
             setDanger(true)
           }
           setLocation(location_)
@@ -77,20 +87,22 @@ export default function Absensi() {
       } else if (Platform.OS === 'ios') {
         data = await calculateLocation.convertLatLongToKm(lang, long, location_?.coords?.latitude, location_?.coords?.longitude)
         if (data <= 0.3) {
-          setText('Berada dalam Lokasi')
+          setText('Anda Berada di Area Pondok')
         } else {
-          setText('titik berada diluar Radius')
+          setText('Anda Berada di Luar Area Pondok')
         }
         setLocation(location_)
       }
     }, 500)
   }, [location]);
   useEffect(() => {
-    dispatch(absensiActions.clearAbsensi())
-    if (!danger) {
-      dispatch(getAllAbsensi("19860420101056"))
-    }
-  }, [danger, hasAbsen])
+    const focusHandler = navigation.addListener("focus", async () => {
+      if (!danger && username !== "") {
+        dispatch(getAllAbsensi(username))
+      }
+    })
+    return focusHandler
+  }, [danger, hasAbsen, username, navigation])
   useEffect(() => {
     if (Object.keys(allAbsensi).length !== 0) {
       if (allAbsensi.start) {
@@ -112,9 +124,33 @@ export default function Absensi() {
       }
     }
   }, [loadingAbsensi])
+  useEffect(() => {
+    const getStorage = async () => {
+      const data: any = await AsyncStorage.getItem('absensi')
+      if (JSON.parse(data) !== null || Object.keys(JSON.parse(data)).length !== 0) {
+        dispatch(authActions.setAuth(JSON.parse(data)))
+      }
+    }
+    const removeStorage = async () => {
+      await AsyncStorage.removeItem("absensi")
+    }
+    const focusHandler = navigation.addListener("focus", async () => {
+      if (route?.params?.status) {
+        await removeStorage()
+        dispatch(authActions.clearAuth())
+      }
+      else {
+        await getStorage()
+      }
+    })
+    return focusHandler
+  }, [navigation, route])
   return (
     <SafeAreaView>
       <Alert show={showMsg} msg={msgAbsensi} />
+      <Loader show={loadingAbsensi} />
+      {/* <Alert show={true} msg={msgAbsensi} />
+      <Loader show={true} /> */}
       <StatusBar backgroundColor="#ffff" />
       <View className="h-[100vh] bg-slate-50 mt-[3vh]">
         <View className="h-[92vh] py-[10%]">
@@ -127,9 +163,9 @@ export default function Absensi() {
           <View>
             {Object.keys(allAbsensi)?.length !== 0 ?
               allAbsensi?.masuk ?
-              showButton ?
+                showButton ?
                   <View onTouchStart={absen} className={`bg-[#dbad17] w-[90%] py-4 mx-auto rounded-lg ${danger || text === "Waiting..." ? "hidden" : "block"}`}>
-                    <Text className="text-center text-white text-xl">Absen</Text>
+                    <Text className="text-center text-white text-xl">Absen {allAbsensi?.start ? "Datang" : "Pulang"}</Text>
                   </View>
                   :
                   <Text className={`text-center text-sky-700 text-lg ${danger || text === "Waiting..." ? "hidden" : "block"}`}>Anda Sudah Melakukan Absensi</Text>
@@ -145,7 +181,7 @@ export default function Absensi() {
           </View>
         </View>
       </View>
-      <Menu index={1} />
+      <Menu index={0} />
     </SafeAreaView>
   )
 }

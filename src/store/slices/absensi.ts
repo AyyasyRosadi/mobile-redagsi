@@ -18,6 +18,13 @@ export const absensiStore = createSlice({
         clearAbsensi : (state)=>{
             state.allAbsensi = {}
             state.msgAbsensi = ""
+            state.hasAbsen = "WAITING"
+            state.status = "IDDLE"
+        },
+        clearRiwayat : (state)=>{
+            state.riwayatAbsensi = {}
+            state.msgAbsensi = ""
+            state.status = "IDDLE"
         }
     },
     extraReducers : builder =>{
@@ -34,7 +41,7 @@ export const absensiStore = createSlice({
         })
         .addCase(getAllAbsensi.rejected,(state,action)=>{
             state.loadingAbsensi = false
-            state.allAbsensi = []
+            state.allAbsensi = action.payload
             state.status = "ERROR"
         })
         .addCase(getAllRiwayat.pending,(state)=>{
@@ -59,7 +66,7 @@ export const absensiStore = createSlice({
         })
         .addCase(addAbsensi.fulfilled,(state,action)=>{
             state.loadingAbsensi = false
-            state.msgAbsensi = action.payload.msg
+            state.msgAbsensi = "Berhasil"
             state.status = "SUCCES"
             state.hasAbsen = "SUCCES"
         })

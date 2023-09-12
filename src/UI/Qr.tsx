@@ -5,7 +5,7 @@ import Menu from '../templates/Menu'
 import SvgQRCode from 'react-native-qrcode-svg';
 
 function QrCode({ params }) {
-    return <SvgQRCode value={params} size={330} />
+    return <SvgQRCode value={params} size={300} />
 }
 
 export default function Qr() {
@@ -24,7 +24,7 @@ export default function Qr() {
                     </View>
                 </ScrollView>
             </View>
-            <Menu index={4} />
+            <Menu index={3} />
         </SafeAreaView>
     )
 }
