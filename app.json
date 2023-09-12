@@ -35,14 +35,14 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "package": "com.denimarswandi.absensiPtk_"
+      "package": "com.ayyasy_r.absensiPtk_"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "dc7a9224-ea03-464d-a981-3d5326365744"
+        "projectId": "41ccb804-785b-4bcf-a9d6-4d2a79962fd2"
       }
     }
   }

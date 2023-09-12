@@ -60,11 +60,11 @@ export default function Riwayat({navigation}) {
                     <View className='h-full py-[10%] flex flex-col space-y-[3%] mb-[9vh]'>
                         <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
                             <View className='flex flex-row justify-between'>
-                                <View onTouchStart={openFromDate} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
+                                <View onTouchStart={()=>setShowPickerFrom(true)} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
                                     <Text className='text-sky-700'>Dari:</Text>
                                     <Text className='text-sky-700'>{moment(fromDate).format("DD-MMMM")}</Text>
                                 </View>
-                                <View onTouchStart={openToDate} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
+                                <View onTouchStart={()=>setShowPickerTo(true)} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
                                     <Text className='text-sky-700'>Sampai:</Text>
                                     <Text className='text-sky-700'>{moment(toDate).format("DD-MMMM")}</Text>
                                 </View>

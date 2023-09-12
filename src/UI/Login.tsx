@@ -9,45 +9,47 @@ import { login } from '../store/actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authActions } from '../store/slices/auth';
 import Loader from '../templates/Loader';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Login() {
     const dispatch = useDispatch<AppThunkDispatch>()
-    const {loadingAuth,token,username,lembaga,msgAuth,status,nama} = useSelector((state:RootState)=>state.auth)
+    const { loadingAuth, token, username, lembaga, msgAuth, status, nama } = useSelector((state: RootState) => state.auth)
     const navigation = useNavigation<any>()
     const [name, setName] = useState<any>("");
     const [pwd, setPwd] = useState("");
     const [secure, setSecure] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const isLogin = () => {
-        dispatch(login({username:name,password:pwd,sistem:"mobile"}))
+        dispatch(login({ username: name, password: pwd, sistem: "mobile" }))
     }
     useEffect(() => {
         if (status === "ERROR") {
             setShowAlert(true);
-            setTimeout(()=>{
+            setTimeout(() => {
                 setShowAlert(false)
                 dispatch(authActions.clearStatus())
-            },2000)    
+            }, 2000)
         }
     }, [status]);
-    useEffect(()=>{
-        const setStorage = async()=>{
-            try{
-                if(token !== "" && username !== ""){
-                    let data = {token:token,nupy:username,nama:nama}
-                    await AsyncStorage.setItem("absensi",JSON.stringify(data))
+    useEffect(() => {
+        const setStorage = async () => {
+            try {
+                if (token !== "" && username !== "") {
+                    let data = { token: token, nupy: username, nama: nama }
+                    await AsyncStorage.setItem("absensi", JSON.stringify(data))
                     // navigation.navigate("Home",{status:false})
                 }
             }
-            catch(err){
+            catch (err) {
                 throw err
             }
         }
         setStorage()
-    },[loadingAuth,])
+    }, [loadingAuth,])
     return (
         <KeyboardAvoidingView behavior="height" className="flex h-screen">
-            <Loader show={loadingAuth}/>
+            <StatusBar />
+            <Loader show={loadingAuth} />
             <View className="h-[40%]">
                 <View className="bg-black absolute top-0 h-[100%] w-[120%] -ml-[10%] z-10 opacity-50 rounded-b-[90px]"></View>
                 <Image

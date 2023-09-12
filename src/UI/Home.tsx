@@ -16,8 +16,10 @@ import { authActions } from '../store/slices/auth';
 import { logout } from '../store/actions/auth';
 import Loader from '../templates/Loader';
 
-const lang = -8.5896871
-const long = 116.0925219
+const langPondok = -8.589097
+const longPondok = 116.095872
+const langDiya = -8.6560562
+const longDiya = 116.5396862
 
 export default function Absensi({ navigation }) {
   const dispatch = useDispatch<AppThunkDispatch>()
@@ -74,8 +76,8 @@ export default function Absensi({ navigation }) {
           setDanger(true)
 
         } else {
-          data = await calculateLocation.convertLatLongToKm(lang, long, location_?.coords?.latitude, location_?.coords?.longitude)
-          if (data <= 0.3) {
+          data = await calculateLocation.convertLatLongToKm(langPondok, longPondok, location_?.coords?.latitude, location_?.coords?.longitude)
+          if (data <= 0.5) {
             setText('Anda Berada di Area Pondok')
             setDanger(false)
           } else {
@@ -85,8 +87,8 @@ export default function Absensi({ navigation }) {
           setLocation(location_)
         }
       } else if (Platform.OS === 'ios') {
-        data = await calculateLocation.convertLatLongToKm(lang, long, location_?.coords?.latitude, location_?.coords?.longitude)
-        if (data <= 0.3) {
+        data = await calculateLocation.convertLatLongToKm(langPondok, longPondok, location_?.coords?.latitude, location_?.coords?.longitude)
+        if (data <= 0.5) {
           setText('Anda Berada di Area Pondok')
         } else {
           setText('Anda Berada di Luar Area Pondok')
@@ -155,7 +157,7 @@ export default function Absensi({ navigation }) {
       <View className="h-[100vh] bg-slate-50 mt-[3vh]">
         <View className="h-[92vh] py-[10%]">
           <View className="w-[90vw] h-[43vh] mx-auto">
-            <View className="bg-sky-600 rounded-full w-[70vw] h-[35vh] mx-auto p-10 flex flex-row justify-center items-center">
+            <View className="bg-[#dbad17] rounded-full w-[70vw] h-[35vh] mx-auto p-10 flex flex-row justify-center items-center">
               <Text className="text-white text-4xl">{moment(time).format("HH:mm:ss")}</Text>
             </View>
             <Text className={`text-center mt-3 text-xl ${danger ? "text-red-700" : "text-sky-700"}`}>{text}</Text>
