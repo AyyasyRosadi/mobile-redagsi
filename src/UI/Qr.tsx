@@ -3,13 +3,16 @@ import React, { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Menu from '../templates/Menu'
 import SvgQRCode from 'react-native-qrcode-svg';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 function QrCode({ params }) {
     return <SvgQRCode value={params} size={300} />
 }
 
 export default function Qr() {
-    const [nupy, setNupy] = useState("19890720141156")
+    const {username} = useSelector((state:RootState)=>state.auth)
+    const [nupy, setNupy] = useState()
     return (
         <SafeAreaView>
             <StatusBar backgroundColor="#ffff" />
@@ -18,7 +21,7 @@ export default function Qr() {
                     <View className='h-full py-[10%] flex flex-col justify-center'>
                         <View className='bg-slate-50 w-[90%] h-[85vh] mx-auto'>
                             <View className='flex flex-row justify-center items-center my-auto'>
-                                <QrCode params={nupy} />
+                                <QrCode params={username} />
                             </View>
                         </View>
                     </View>

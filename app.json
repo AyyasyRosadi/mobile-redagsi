@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "absensiPtk_",
+    "name": "Redagsi",
     "slug": "absensiPtk_",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [

@@ -34,3 +34,17 @@ export interface Auth {
     msgAuth : any
     status : string
 }
+
+export interface Profile {
+    profile : any
+    loadingProfile : boolean
+    msgProfile : any
+    status:string
+}
+
+export interface Information {
+    allInformation : any
+    loadingInformation : boolean
+    msgInformation : any
+    status:string
+} 

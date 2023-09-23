@@ -25,6 +25,9 @@ export const absensiStore = createSlice({
             state.riwayatAbsensi = {}
             state.msgAbsensi = ""
             state.status = "IDDLE"
+        },
+        clearHasAbsen : (state)=>{
+            state.hasAbsen = "WAITING"
         }
     },
     extraReducers : builder =>{

@@ -81,33 +81,6 @@ export default function Gaji({navigation}) {
                 }
               </View>
             </View>
-            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 && Object.keys(allGaji).length !== 0 ?
-              <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
-                <View className='flex flex-row space-x-3'>
-                  <View className='w-[20%]'>
-                    <Image source={abhur} alt='' className='w-16 h-16' />
-                  </View>
-                  <View className='w-[80%] my-auto'>
-                    <Text>PONPES ABU HURAIRAH MATARAM</Text>
-                    <Text>JLN. MAJAPAHIT 54B MATARAM (0370) 639526</Text>
-                  </View>
-                </View>
-                {allGaji !== null ?
-                  Object.keys(allGaji).length !== 0 ?
-                    <View className='mt-3'>
-                      <FieldTitle title='NAMA' value={allGaji?.nama} />
-                      <FieldTitle title='NUPY' value={allGaji?.nupy} />
-                      <FieldTitle title='SATKER' value={allGaji?.statusPtk?.listSatker?.nama_satker} />
-                    </View>
-                    :
-                    <></>
-                  :
-                  <></>
-                }
-              </View>
-              :
-              <></>
-            }
             {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 ?
               <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
                 <View className='flex flex-row space-x-3'>

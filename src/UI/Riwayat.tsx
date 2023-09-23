@@ -33,12 +33,6 @@ export default function Riwayat({navigation}) {
         setShowPickerTo(false)
         setToDate(selectedDate)
     }
-    const openFromDate = () => {
-        setShowPickerFrom(true)
-    }
-    const openToDate = () => {
-        setShowPickerTo(true)
-    }
     useEffect(() => {
         if(fromDate && toDate && filter && username !== ""){
             dispatch(getAllRiwayat({ nupy: username, start: moment(fromDate).format("YYYY-MM-DD"), end: moment(toDate).format("YYYY-MM-DD") }))
@@ -87,7 +81,7 @@ export default function Riwayat({navigation}) {
                             Object.keys(riwayatAbsensi).length !== 0 ?
                                 riwayatAbsensi?.absensi_mobile_users.map((d: any, i: any) => (
                                     <View key={i}>
-                                        <CardRiwayat tanggal={moment(d.stat).format("dddd DD MMMM YYYY")} masuk={moment(d.start).format("HH:mm:ss")} pulang={moment(d.end).format("HH:mm:ss")} />
+                                        <CardRiwayat tanggal={moment(d.start).format("dddd DD MMMM YYYY")} masuk={d.start ? moment(d.start).format("HH:mm:ss") : "Tidak absen datang"} pulang={d.end ? moment(d.end).format("HH:mm:ss"):"Tidak absen pulang"} />
                                     </View>
                                 ))
                                 :
