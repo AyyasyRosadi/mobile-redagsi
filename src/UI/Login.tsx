@@ -68,6 +68,7 @@ export default function Login() {
                                 color="bg-slate-100 border border-slate-100 px-2"
                                 set={setName}
                                 placeholder="username"
+                                keyboard="number-pad"
                             />
                         </View>
                         <View className="relative">

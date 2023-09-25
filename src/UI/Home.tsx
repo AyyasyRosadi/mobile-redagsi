@@ -16,6 +16,7 @@ import { authActions } from '../store/slices/auth';
 import Loader from '../templates/Loader';
 import { getAllInformation } from '../store/actions/informasi';
 import Carousel from 'react-native-reanimated-carousel';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const langPondok = -8.589097
 const longPondok = 116.095872
@@ -77,49 +78,51 @@ export default function Absensi({ navigation }) {
     return () => clearInterval(timer)
   }, [])
   useEffect(() => {
-    setTimeout(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      let location_: SetStateAction<any> = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest, timeInterval: 1000
-      });
-
-      if (errorMsg) {
-        setText(errorMsg)
-      }
-
-      let data;
-
-      if (Platform.OS === 'android') {
-        if (location_?.mocked) {
-          setText('Anda tidak bisa melakukan absen. Anda menggunakan Fake GPS')
-          setDanger(true)
-
-        } else {
-          data = await calculateLocation.convertLatLongToKm(langDiya, longDiya, location_?.coords?.latitude, location_?.coords?.longitude)
-          if (data <= 0.5) {
-            setText('Anda berada di radius area absensi')
-            setDanger(false)
-          } else {
-            setText('Anda berada di luar radius absensi')
-            setDanger(true)
+      if (Object.keys(allAbsensi).length !== 0) {
+        setTimeout(async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
           }
-          setLocation(location_)
-        }
-      } else if (Platform.OS === 'ios') {
-        data = await calculateLocation.convertLatLongToKm(langDiya, longDiya, location_?.coords?.latitude, location_?.coords?.longitude)
-        if (data <= 0.5) {
-          setText('Anda berada di radius area absensi')
-        } else {
-          setText('Anda berada di luar radius absensi')
-        }
-        setLocation(location_)
+          let location_: SetStateAction<any> = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Highest, timeInterval: 1000
+          });
+
+          if (errorMsg) {
+            setText(errorMsg)
+          }
+
+          let data;
+
+          if (Platform.OS === 'android') {
+            if (location_?.mocked) {
+              setText('Anda tidak bisa melakukan absen. Anda menggunakan Fake GPS')
+              setDanger(true)
+
+            } else {
+              data = await calculateLocation.convertLatLongToKm( parseFloat(allAbsensi?.location?.langitude),parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
+              if (data <= 0.5) {
+                setText('Anda berada di radius area absensi')
+                setDanger(false)
+              } else {
+                setText('Anda berada di luar radius absensi')
+                setDanger(true)
+              }
+              setLocation(location_)
+            }
+          } else if (Platform.OS === 'ios') {
+            data = await calculateLocation.convertLatLongToKm(parseFloat(allAbsensi?.location?.langitude),parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
+            if (data <= 0.5) {
+              setText('Anda berada di radius area absensi')
+            } else {
+              setText('Anda berada di luar radius absensi')
+            }
+            setLocation(location_)
+          }
+        }, 500)
       }
-    }, 500)
-  }, [location]);
+  }, [location, allAbsensi]);
   useEffect(() => {
     if (!danger && username !== "") {
       dispatch(getAllAbsensi(username))
@@ -204,10 +207,14 @@ export default function Absensi({ navigation }) {
               scrollAnimationDuration={1000}
               data={allInformation}
               renderItem={({ index }) => (
-                <View className='bg-[#f0d270] w-[100vw] h-[90%] my-auto flex flex-row justify-center items-center'>
+                <View className='bg-[#f0d270] w-[100vw] py-[3%] h-[90%] my-auto flex flex-row justify-center items-center'>
                   <View>
-                    <Text className='text-2xl text-slate-900 font-bold text-center'>{allInformation[index]?.title}</Text>
-                    <Text className='text-lg text-slate-800 text-center mt-[5%] mx-[3%]'>{allInformation[index]?.informasi}</Text>
+                    <View>
+                      <Text className='text-2xl text-slate-900 font-bold text-center'>{allInformation[index]?.title}</Text>
+                    </View>
+                    <ScrollView>
+                      <Text className='text-lg text-slate-800 text-center mt-[5%] mx-[3%]'>{allInformation[index]?.informasi}</Text>
+                    </ScrollView>
                   </View>
                 </View>
               )}
