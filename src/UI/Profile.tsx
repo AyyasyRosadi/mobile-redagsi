@@ -16,6 +16,7 @@ import { getProfile, resetPassword } from '../store/actions/profile'
 import Alert from '../templates/Alert'
 import InputField from '../components/fields/InputFields'
 import { profileActions } from '../store/slices/profile'
+import { Platform } from 'react-native'
 
 export default function Profile({ navigation }) {
     const dispatch = useDispatch<AppThunkDispatch>()
@@ -75,7 +76,7 @@ export default function Profile({ navigation }) {
             <Alert show={modalVisible} msg={msgProfile} />
             <Loader show={loadingAuth || loadingProfile} />
             <StatusBar backgroundColor="#ffff" />
-            <View className='h-[100vh] bg-slate-50 mt-[3vh]'>
+            <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
                 <ScrollView>
                     <View className='h-full py-[10%] flex flex-col space-y-[5%] mb-[9vh]'>
                         <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
@@ -137,8 +138,8 @@ export default function Profile({ navigation }) {
                         </View>
                     </View>
                 </ScrollView>
+                <Menu index={4} />
             </View>
-            <Menu index={4} />
         </SafeAreaView >
     )
 }

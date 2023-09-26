@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '../store'
 import { authActions } from '../store/slices/auth'
+import Picker from '../UI/Picker'
 
 async function getStorage() {
   const storage: any = await AsyncStorage.getItem("absensi")

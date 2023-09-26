@@ -17,15 +17,15 @@ import { Picker, PickerIOS } from '@react-native-picker/picker'
 import Loader from '../templates/Loader'
 import { gajiActions } from '../store/slices/gaji'
 
-export default function Gaji({navigation}) {
-  const {username} = useSelector((state:RootState)=>state.auth)
+export default function Gaji({ navigation }) {
+  const { username } = useSelector((state: RootState) => state.auth)
   const dispatch = useDispatch<AppThunkDispatch>()
   const { allGaji, bulanPenggajian, loadingGaji } = useSelector((state: RootState) => state.gaji)
   const [getBulan, setGetBulan] = useState<any>("")
   const date = new Date()
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(getBulanPenggajian())
-  },[])
+  }, [])
   useEffect(() => {
     if (getBulan !== "") {
       dispatch(getGaji({ nupy: username, bulan: getBulan }))
@@ -34,19 +34,19 @@ export default function Gaji({navigation}) {
   useEffect(() => {
     const focusHandler = navigation.addListener("focus", async () => {
       setGetBulan("")
-      dispatch(gajiActions.clearGaji())  
+      dispatch(gajiActions.clearGaji())
     })
     return focusHandler
-  },[navigation])
+  }, [navigation])
   return (
     <SafeAreaView>
       <Loader show={loadingGaji} />
       <StatusBar backgroundColor="#ffff" />
-      <View className='h-[100vh] bg-slate-50 mt-[3vh]'>
+      <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
         <ScrollView>
           <View className='h-full py-[10%] flex flex-col space-y-[3%] mb-[15vh]'>
             <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
-              <View className={`flex bg-white border ${Platform.OS === "android" ? "rounded-lg" : "rounded-none p-2"}`}>
+              <View className={`flex ${Platform.OS === "android" ? "rounded-lg  bg-white border" : "rounded-none p-2 "}`}>
                 {Platform.OS === "android" ?
                   <Picker
                     selectedValue={getBulan}
@@ -64,17 +64,19 @@ export default function Gaji({navigation}) {
                   </Picker>
                   :
                   <PickerIOS
+                    style={{ height: 70 }}
+                    itemStyle={{ height: 100 }}
                     selectedValue={getBulan}
                     onValueChange={(value: any) => {
                       setGetBulan(value)
                     }}
                   >
-                    <Picker.Item value="" label='Pilih Bulan' />
+                    <PickerIOS.Item value="" label='Pilih Bulan' />
                     {bulanPenggajian.length > 0 ? bulanPenggajian?.map((d: any, id) => (
-                      <Picker.Item key={id} label={optionsBulan[d.index_bulan].label} value={d.bulan} />
+                      <PickerIOS.Item key={id} label={optionsBulan[d.index_bulan].label} value={d.bulan} />
                     ))
                       :
-                      <Picker.Item label={""} value={""} />
+                      <PickerIOS.Item label={""} value={""} />
                     }
                   </PickerIOS>
 
@@ -180,8 +182,8 @@ export default function Gaji({navigation}) {
             }
           </View>
         </ScrollView>
+        <Menu index={1} />
       </View >
-      <Menu index={1} />
     </SafeAreaView >
   )
 }

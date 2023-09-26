@@ -12,6 +12,7 @@ import { getAllRiwayat } from '../store/actions/absensi';
 import Loader from '../templates/Loader';
 import { absensiActions } from '../store/slices/absensi';
 import "moment/locale/id"
+import { Platform } from 'react-native';
 // import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 
@@ -49,7 +50,7 @@ export default function Riwayat({navigation}) {
         <SafeAreaView>
             <Loader show={loadingAbsensi} />
             <StatusBar backgroundColor="#ffff" />
-            <View className='h-[100vh] bg-slate-50 mt-[3vh]'>
+            <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
                 <ScrollView>
                     <View className='h-full py-[10%] flex flex-col space-y-[3%] mb-[9vh]'>
                         <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
@@ -91,8 +92,8 @@ export default function Riwayat({navigation}) {
                         }
                     </View>
                 </ScrollView>
-            </View>
             <Menu index={2} />
+            </View>
         </SafeAreaView >
     )
 }

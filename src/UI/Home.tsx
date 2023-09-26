@@ -1,5 +1,5 @@
 import React, { useState, useEffect, SetStateAction } from 'react';
-import { Platform, Text, View, SafeAreaView } from 'react-native';
+import { Platform, Text, View, SafeAreaView, Dimensions } from 'react-native';
 import calculateLocation from '../helper/calculateLocation';
 import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
@@ -17,6 +17,7 @@ import Loader from '../templates/Loader';
 import { getAllInformation } from '../store/actions/informasi';
 import Carousel from 'react-native-reanimated-carousel';
 import { ScrollView } from 'react-native-gesture-handler';
+import { getPerbandingan } from '../helper/perbandingan';
 
 const langPondok = -8.589097
 const longPondok = 116.095872
@@ -78,50 +79,52 @@ export default function Absensi({ navigation }) {
     return () => clearInterval(timer)
   }, [])
   useEffect(() => {
-      if (Object.keys(allAbsensi).length !== 0) {
-        setTimeout(async () => {
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
-          }
-          let location_: SetStateAction<any> = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Highest, timeInterval: 1000
-          });
+    if (Object.keys(allAbsensi).length !== 0) {
+      setTimeout(async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+        let location_: SetStateAction<any> = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Highest, timeInterval: 1000
+        });
 
-          if (errorMsg) {
-            setText(errorMsg)
-          }
+        if (errorMsg) {
+          setText(errorMsg)
+        }
 
-          let data;
+        let data;
 
-          if (Platform.OS === 'android') {
-            if (location_?.mocked) {
-              setText('Anda tidak bisa melakukan absen. Anda menggunakan Fake GPS')
-              setDanger(true)
+        if (Platform.OS === 'android') {
+          if (location_?.mocked) {
+            setText('Anda tidak bisa melakukan absen. Anda menggunakan Fake GPS')
+            setDanger(true)
 
-            } else {
-              data = await calculateLocation.convertLatLongToKm( parseFloat(allAbsensi?.location?.langitude),parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
-              if (data <= 0.5) {
-                setText('Anda berada di radius area absensi')
-                setDanger(false)
-              } else {
-                setText('Anda berada di luar radius absensi')
-                setDanger(true)
-              }
-              setLocation(location_)
-            }
-          } else if (Platform.OS === 'ios') {
-            data = await calculateLocation.convertLatLongToKm(parseFloat(allAbsensi?.location?.langitude),parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
+          } else {
+            data = await calculateLocation.convertLatLongToKm(parseFloat(allAbsensi?.location?.langitude), parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
             if (data <= 0.5) {
               setText('Anda berada di radius area absensi')
+              setDanger(false)
             } else {
               setText('Anda berada di luar radius absensi')
+              setDanger(true)
             }
             setLocation(location_)
           }
-        }, 500)
-      }
+        } else if (Platform.OS === 'ios') {
+          data = await calculateLocation.convertLatLongToKm(parseFloat(allAbsensi?.location?.langitude), parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
+          if (data <= 0.5) {
+            setText('Anda berada di radius area absensi')
+            setDanger(false)
+          } else {
+            setText('Anda berada di luar radius absensi')
+            setDanger(true)
+          }
+          setLocation(location_)
+        }
+      }, 500)
+    }
   }, [location, allAbsensi]);
   useEffect(() => {
     if (!danger && username !== "") {
@@ -165,21 +168,21 @@ export default function Absensi({ navigation }) {
   useEffect(() => {
     setLogout()
   }, [allAbsensi])
+  const windowWidth = Dimensions.get("screen").width
+  const windowHeight = Dimensions.get("screen").height
   return (
-    <SafeAreaView>
+    <SafeAreaView className=''>
       <Alert show={showMsg} msg={msgAbsensi} />
       <Loader show={loadingAbsensi} />
-      {/* <Alert show={true} msg={msgAbsensi} />
-      <Loader show={true} /> */}
       <StatusBar backgroundColor="#ffff" />
-      <View className="h-[100vh] bg-slate-50 mt-[3vh]">
-        <View className="h-[92vh] py-[10%]">
-          <View className="w-[90vw] h-[50%] mx-auto">
-            <View className="bg-[#dbad17] rounded-full w-[70vw] h-[35vh] mx-auto p-10 flex flex-row justify-center items-center">
+      <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
+        <View className="h-[100vh] pt-[5vh]">
+          <View className={`mx-auto`} style={{width:windowWidth/1.5,height:windowWidth/1.5}}>
+            <View className="bg-[#dbad17] my-auto rounded-full w-[90%] h-[90%] mx-auto p-10 flex flex-row justify-center items-center">
               <Text className="text-white text-4xl">{moment(time).format("HH:mm:ss")}</Text>
             </View>
-            <Text className={`text-center mt-3 text-xl ${danger ? "text-red-700" : "text-sky-700"}`}>{text}</Text>
           </View>
+          <Text className={`text-center mt-3 text-xl ${danger ? "text-red-700" : "text-sky-700"}`}>{text}</Text>
           <View className='w-[95%] mt-[5%] mx-auto h-[10%]'>
             {Object.keys(allAbsensi)?.length !== 0 ?
               allAbsensi?.masuk ?
@@ -197,7 +200,7 @@ export default function Absensi({ navigation }) {
               <></>
             }
           </View>
-          <View className='w-[100%] h-[35%] mt-[5%]'>
+          <View className='w-[100%] h-[30%]'>
             <Carousel
               width={1000}
               autoPlay={true}
@@ -223,8 +226,8 @@ export default function Absensi({ navigation }) {
           <View className="bg-slate-400 w-[95%] h-fullr mx-auto rounded-lg shadow-lg">
           </View>
         </View>
+        <Menu index={0} />
       </View>
-      <Menu index={0} />
     </SafeAreaView>
   )
 }
