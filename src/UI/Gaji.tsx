@@ -5,13 +5,10 @@ import Menu from '../templates/Menu'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '../store'
 import { getBulanPenggajian, getGaji } from '../store/actions/gaji'
-import abhur from "../assets/abhur.png"
-import Field from '../components/custom/FieldTitle'
 import gaji from "../assets/gaji.png"
 import hutang from "../assets/debt.png"
-import { optionsBulan, selectBulan } from '../helper/options'
 import { currency } from '../helper/currency'
-import FieldTitle from '../components/custom/FieldTitle'
+import { optionsBulan } from "../helper/options"
 import FieldGaji from '../components/custom/FieldGaji'
 import { Picker, PickerIOS } from '@react-native-picker/picker'
 import Loader from '../templates/Loader'
@@ -22,15 +19,16 @@ export default function Gaji({ navigation }) {
   const dispatch = useDispatch<AppThunkDispatch>()
   const { allGaji, bulanPenggajian, loadingGaji } = useSelector((state: RootState) => state.gaji)
   const [getBulan, setGetBulan] = useState<any>("")
+  const [selectedLanguage, setSelectedLanguage] = useState("")
   const date = new Date()
   useEffect(() => {
     dispatch(getBulanPenggajian())
   }, [])
   useEffect(() => {
-    if (getBulan !== "") {
+    if (getBulan !== "" && username !== "") {
       dispatch(getGaji({ nupy: username, bulan: getBulan }))
     }
-  }, [getBulan])
+  }, [getBulan,username])
   useEffect(() => {
     const focusHandler = navigation.addListener("focus", async () => {
       setGetBulan("")
@@ -38,23 +36,25 @@ export default function Gaji({ navigation }) {
     })
     return focusHandler
   }, [navigation])
+  console.log(bulanPenggajian)
   return (
     <SafeAreaView>
-      <Loader show={loadingGaji} />
-      <StatusBar backgroundColor="#ffff" />
-      <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
+      <View className={`h-screen bg-slate-50 w-screen ${Platform.OS === "android" ? "mt-[2vh]" : ""}`}>
+        <Loader show={loadingGaji} />
+        <StatusBar backgroundColor="#ffff" />
         <ScrollView>
           <View className='h-full py-[10%] flex flex-col space-y-[3%] mb-[15vh]'>
             <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
-              <View className={`flex ${Platform.OS === "android" ? "rounded-lg  bg-white border" : "rounded-none p-2 "}`}>
+              <View className={`flex rounded-lg  bg-white border`}>
                 {Platform.OS === "android" ?
                   <Picker
                     selectedValue={getBulan}
                     onValueChange={(value) => {
+                      console.log("hello")
                       setGetBulan(value)
                     }}
                   >
-                    <Picker.Item value="" label='Pilih Bulan' />
+                    <Picker.Item label={"Pilih Bulan"} value={""} />
                     {bulanPenggajian.length > 0 ? bulanPenggajian?.map((d: any, id) => (
                       <Picker.Item key={id} label={optionsBulan[d.index_bulan].label} value={d.bulan} />
                     ))
@@ -62,7 +62,9 @@ export default function Gaji({ navigation }) {
                       <Picker.Item label={""} value={""} />
                     }
                   </Picker>
+
                   :
+
                   <PickerIOS
                     style={{ height: 70 }}
                     itemStyle={{ height: 100 }}
@@ -83,18 +85,18 @@ export default function Gaji({ navigation }) {
                 }
               </View>
             </View>
-            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 ?
-              <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
-                <View className='flex flex-row space-x-3'>
-                  <View className='w-[15%]'>
-                    <Image source={gaji} alt='' className='w-12 h-12' />
+            {allGaji !== null ?
+              getBulan !== "" && getBulan !== null && Object.keys(allGaji)?.length !== 0 ?
+                <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
+                  <View className='flex flex-row space-x-3'>
+                    <View className='w-[15%]'>
+                      <Image source={gaji} alt='' className='w-12 h-12' />
+                    </View>
+                    <View className='w-[85%] my-auto'>
+                      <Text className='font-bold text-lg uppercase'>Gaji</Text>
+                    </View>
                   </View>
-                  <View className='w-[85%] my-auto'>
-                    <Text className='font-bold text-lg uppercase'>Gaji</Text>
-                  </View>
-                </View>
-                {allGaji !== null ?
-                  Object.keys(allGaji).length !== 0 ?
+                  {Object.keys(allGaji).length !== 0 ?
                     <View className='mt-3'>
                       <Text className='font-bold'>A. Gaji Dasar</Text>
                       <View className='ml-[7%] mt-3 mb-1'>
@@ -124,25 +126,25 @@ export default function Gaji({ navigation }) {
                     </View>
                     :
                     <></>
-                  :
-                  <></>
-                }
-              </View>
+                  }
+                </View>
+                :
+                <></>
               :
               <></>
             }
-            {getBulan !== "" && getBulan !== null && Object.keys(allGaji).length !== 0 ?
-              <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
-                <View className='flex flex-row space-x-3'>
-                  <View className='w-[15%]'>
-                    <Image source={hutang} alt='' className='w-12 h-12' />
+            {allGaji !== null ?
+              getBulan !== "" && getBulan !== null && Object.keys(allGaji)?.length !== 0 ?
+                <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
+                  <View className='flex flex-row space-x-3'>
+                    <View className='w-[15%]'>
+                      <Image source={hutang} alt='' className='w-12 h-12' />
+                    </View>
+                    <View className='w-[85%] my-auto'>
+                      <Text className='font-bold text-lg uppercase'>Pinjaman</Text>
+                    </View>
                   </View>
-                  <View className='w-[85%] my-auto'>
-                    <Text className='font-bold text-lg uppercase'>Pinjaman</Text>
-                  </View>
-                </View>
-                {allGaji !== null ?
-                  Object.keys(allGaji).length !== 0 ?
+                  {Object.keys(allGaji).length !== 0 ?
                     allGaji?.pinjaman_ptks.length > 0 || allGaji?.titipan_potongans.length > 0 ?
                       <View className='mt-3'>
                         <Text className='font-bold'>D. Potongan</Text>
@@ -173,10 +175,10 @@ export default function Gaji({ navigation }) {
                       </View>
                     :
                     <></>
-                  :
-                  <></>
-                }
-              </View>
+                  }
+                </View>
+                :
+                <></>
               :
               <></>
             }
@@ -184,6 +186,6 @@ export default function Gaji({ navigation }) {
         </ScrollView>
         <Menu index={1} />
       </View >
-    </SafeAreaView >
+    </SafeAreaView>
   )
 }

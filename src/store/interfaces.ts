@@ -9,7 +9,7 @@ export interface Absensi {
 
 export interface Gaji {
     allGaji : any
-    bulanPenggajian : string[]
+    bulanPenggajian : any
     loadingGaji : boolean
     msgGaji : any
     status : string
