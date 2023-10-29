@@ -36,7 +36,6 @@ export default function Gaji({ navigation }) {
     })
     return focusHandler
   }, [navigation])
-  console.log(bulanPenggajian)
   return (
     <SafeAreaView>
       <View className={`h-screen bg-slate-50 w-screen ${Platform.OS === "android" ? "mt-[2vh]" : ""}`}>
@@ -50,7 +49,6 @@ export default function Gaji({ navigation }) {
                   <Picker
                     selectedValue={getBulan}
                     onValueChange={(value) => {
-                      console.log("hello")
                       setGetBulan(value)
                     }}
                   >

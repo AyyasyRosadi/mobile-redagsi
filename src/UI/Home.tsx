@@ -134,7 +134,6 @@ export default function Absensi({ navigation }) {
   }, [danger, hasAbsen, username])
   useEffect(() => {
     if (Object.keys(allAbsensi).length !== 0) {
-      console.log(allAbsensi)
       if (allAbsensi.start) {
         if (moment(allAbsensi?.absen?.end).format("YYYY-MM-DD HH:mm:ss") > moment(time).format("YYYY-MM-DD HH:mm:ss")) {
           setShowButton(true)

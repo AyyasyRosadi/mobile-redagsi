@@ -4,8 +4,8 @@ import { navigationRef } from "../router/RootNavigation";
 
 const api = axios.create({
     // baseURL:"http://192.168.1.14:9999"
-    baseURL:"http://192.168.1.20:9999"
-    // baseURL:"https://sipahamv2.ponpesabuhurairah.id"
+    // baseURL:"http://192.168.1.20:9999"
+    baseURL:"https://sipahamv2.ponpesabuhurairah.id"
 })
 
 

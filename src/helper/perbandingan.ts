@@ -6,7 +6,6 @@ export  const getPerbandingan = (width: number, height: number) => {
       return findFPB(angka2, angka1 % angka2);
     }
     const fpb = findFPB(setWidth, setHeight);
-    console.log(fpb)
     const perbandingan1 = setWidth / fpb;
     const perbandingan2 = setHeight / fpb;
     // return `${checkWidth} : ${checkHeigth} = ${perbandingan1} : ${perbandingan2}`;
