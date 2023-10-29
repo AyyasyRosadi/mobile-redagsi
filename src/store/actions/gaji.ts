@@ -20,7 +20,7 @@ export const getBulanPenggajian = createAsyncThunk(
     'ptk/list-penggajian/get',
     async(_,{rejectWithValue})=>{
         try{
-            const res = await ApiGaji.getBulan()
+            const res = await ApiGaji.getBulanActive()
             if(res.status === 200){
                 return res.data
             }

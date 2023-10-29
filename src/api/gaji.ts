@@ -6,5 +6,9 @@ export const ApiGaji = {
     },
     getBulan : ()=>{
         return api.get(`/cakepout/list-penggajian/approve`)
-    }
+    },
+    getBulanActive : ()=>{
+        return api.get(`ptk/mobile/absensi/list/bulan-penggajian`)
+    },
+
 }

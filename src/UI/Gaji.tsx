@@ -28,7 +28,7 @@ export default function Gaji({ navigation }) {
     if (getBulan !== "" && username !== "") {
       dispatch(getGaji({ nupy: username, bulan: getBulan }))
     }
-  }, [getBulan,username])
+  }, [getBulan, username])
   useEffect(() => {
     const focusHandler = navigation.addListener("focus", async () => {
       setGetBulan("")
@@ -149,11 +149,13 @@ export default function Gaji({ navigation }) {
                       <View className='mt-3'>
                         <Text className='font-bold'>D. Potongan</Text>
                         <View className='ml-[7%] mt-3 mb-1'>
-                          {allGaji.pinjaman_ptks.map((d: any, i: number) => (
-                            <View key={i}>
-                              <FieldGaji list title={d.ket} value={currency(d.potongan)} />
-                            </View>
-                          ))}
+                          {allGaji.pinjaman_ptks.map((d: any, i: number) => {
+                            if(d.pembayaran_ptks?.length > 0){
+                              return <View key={i}>
+                                <FieldGaji list title={d.ket} value={currency(d.potongan)} />
+                              </View>
+                            }
+                          })}
                           {allGaji.titipan_potongans.map((s: any, i: number) => (
                             <View key={i}>
                               <FieldGaji list title={s.ket} value={currency(s.nominal)} />
