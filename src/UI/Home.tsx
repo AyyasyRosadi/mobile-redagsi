@@ -114,6 +114,7 @@ export default function Absensi({ navigation }) {
           }
         } else if (Platform.OS === 'ios') {
           data = await calculateLocation.convertLatLongToKm(parseFloat(allAbsensi?.location?.langitude), parseFloat(allAbsensi?.location?.longitude), location_?.coords?.latitude, location_?.coords?.longitude)
+          // console.log(data)
           if (data <= 0.5) {
             setText('Anda berada di radius area absensi')
             setDanger(false)
@@ -177,7 +178,7 @@ export default function Absensi({ navigation }) {
       <StatusBar backgroundColor="#ffff" />
       <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
         <View className="h-[100vh] pt-[5vh]">
-          <View className={`mx-auto`} style={{width:windowWidth/1.5,height:windowWidth/1.5}}>
+          <View className={`mx-auto`} style={{ width: windowWidth / 1.5, height: windowWidth / 1.5 }}>
             <View className="bg-[#dbad17] my-auto rounded-full w-[90%] h-[90%] mx-auto p-10 flex flex-row justify-center items-center">
               <Text className="text-white text-4xl">{moment(time).format("HH:mm:ss")}</Text>
             </View>
