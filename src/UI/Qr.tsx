@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import { View, SafeAreaView, ScrollView } from 'react-native'
+import React, { ReactNode, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Menu from '../templates/Menu'
 import SvgQRCode from 'react-native-qrcode-svg';
@@ -7,13 +7,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { Platform } from 'react-native';
 
-function QrCode({ params }) {
+function QrCode({ params }):ReactNode {
     return <SvgQRCode value={params} size={300} />
 }
 
-export default function Qr() {
+export default function Qr():ReactNode {
     const { username } = useSelector((state: RootState) => state.auth)
-    const [nupy, setNupy] = useState()
     return (
         <SafeAreaView>
             <StatusBar backgroundColor="#ffff" />

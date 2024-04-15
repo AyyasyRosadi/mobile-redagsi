@@ -34,7 +34,7 @@ export const informasiStore = createSlice({
             state.loadingInformation = false
             state.status = "ERROR"
             state.allInformation = []
-            state.msgInformation = action.payload
+            state.msgInformation = 'Invalid token'
         })
     }
 })

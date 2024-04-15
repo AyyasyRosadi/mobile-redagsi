@@ -1,20 +1,22 @@
 import { View, Text, Image, SafeAreaView } from 'react-native'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import iconUser from "../assets/profile.png"
 import iconQr from "../assets/qr.png"
 import iconGaji from "../assets/wallet.png"
 import iconRekap from "../assets/rekap.png"
 import iconAbsensi from "../assets/absensi.png"
-import { useNavigation } from '@react-navigation/native'
-import { TMenu } from './TypeTemplates'
+import { ParamListBase, useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from "@react-navigation/stack"
 import { Dimensions } from 'react-native'
 
+type MenuAttributes = {
+  index: number
+}
 
-export default function Menu({ index }: TMenu) {
-  const navigate = useNavigation<any>()
+export default function Menu({ index }: MenuAttributes): ReactNode {
+  const navigate = useNavigation<StackNavigationProp<ParamListBase>>()
   const params = navigate.getState()
   const windowWidth = Dimensions.get("screen").width
-  const windowHeight = Dimensions.get("screen").height
   return (
     <SafeAreaView>
       <View className="h-[65px] absolute bottom-0 bg-[#dcb535] flex-1 w-[100%] flex flex-row justify-between py-2 px-3 shadow-xl">
@@ -28,7 +30,7 @@ export default function Menu({ index }: TMenu) {
           <Text className={`text-center ${params.routeNames[index] === "Riwayat" ? "text-white font-bold" : "text-slate-900"}`}>Riwayat</Text>
           <View className={`w-full h-[5%] bg-white my-[5%] ${params.routeNames[index] === "Riwayat" ? "block" : "hidden"}`}></View>
         </View>
-        <View className="-mt-[10%] bg-sky-600 rounded-full p-2 shadow-2xl shadow-white" style={{width:windowWidth/4.8,height:windowWidth/4.8}} onTouchStart={() => navigate.replace("Home")}>
+        <View className="-mt-[10%] bg-sky-600 rounded-full p-2 shadow-2xl shadow-white" style={{ width: windowWidth / 4.8, height: windowWidth / 4.8 }} onTouchStart={() => navigate.replace("Home")}>
           <Image source={iconAbsensi} className="w-9 h-9 mx-auto" />
           <Text className="text-center text-white mt-1">Absensi</Text>
           <View className={`w-[70%] mx-auto h-[5%] bg-white my-[5%] ${params.routeNames[index] === "Home" ? "block" : "hidden"}`}></View>

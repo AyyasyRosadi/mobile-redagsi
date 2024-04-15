@@ -57,7 +57,7 @@ export const authStore = createSlice({
         state.lembaga = "";
         state.role = "";
         state.nama = ""
-        state.msgAuth = action.payload;
+        state.msgAuth = 'Username atau Password Salah'
       })
       .addCase(logout.pending, (state) => {
         state.loadingAuth = true;
@@ -80,7 +80,7 @@ export const authStore = createSlice({
         state.lembaga = "";
         state.role = "";
         state.nama = ""
-        state.msgAuth = action.payload;
+        state.msgAuth = 'Error';
       });
 
   },

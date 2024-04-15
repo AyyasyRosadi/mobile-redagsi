@@ -1,23 +1,19 @@
 import { View, Text, SafeAreaView, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Menu from '../templates/Menu'
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import FieldTitle from '../components/custom/FieldTitle';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import CardRiwayat from '../templates/CardRiwayat';
-import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppThunkDispatch, RootState } from '../store';
-import { getAllRiwayat } from '../store/actions/absensi';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import Loader from '../templates/Loader';
-import { absensiActions } from '../store/slices/absensi';
-import "moment/locale/id"
 import { Platform } from 'react-native';
-// import RNDateTimePicker from '@react-native-community/datetimepicker';
+import useGetRiwayatAbsensi from '../hooks/dispatch/useGetRiwayatAbsensi';
+import useClearRiwayatAbsensi from '../hooks/dispatch/useClearRiwayatAbsensi';
+import { formatDateMonth, formatFullDate, formatTime } from '../helper/time';
 
 
-export default function Riwayat({ navigation }) {
-    const dispatch = useDispatch<AppThunkDispatch>()
+export default function Riwayat({ navigation }):ReactNode {
     const { username } = useSelector((state: RootState) => state.auth)
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
@@ -26,26 +22,16 @@ export default function Riwayat({ navigation }) {
     const [filter, setFilter] = useState(false)
     const { riwayatAbsensi, loadingAbsensi } = useSelector((state: RootState) => state.absensi)
 
-    const changeFromDate = (event, selectedDate) => {
+    const changeFromDate = (_, selectedDate) => {
         setShowPickerFrom(false)
         setFromDate(selectedDate)
     }
-    const changeToDate = (event, selectedDate) => {
+    const changeToDate = (_, selectedDate) => {
         setShowPickerTo(false)
         setToDate(selectedDate)
     }
-    useEffect(() => {
-        if (fromDate && toDate && filter && username !== "") {
-            dispatch(getAllRiwayat({ nupy: username, start: moment(fromDate).format("YYYY-MM-DD"), end: moment(toDate).format("YYYY-MM-DD") }))
-            setFilter(false)
-        }
-    }, [fromDate, toDate, username, filter])
-    useEffect(() => {
-        const focusHandler = navigation.addListener("focus", async () => {
-            dispatch(absensiActions.clearRiwayat())
-        })
-        return focusHandler
-    }, [navigation])
+    useGetRiwayatAbsensi(fromDate, toDate, filter, username, setFilter)
+    useClearRiwayatAbsensi(navigation)
     return (
         <SafeAreaView>
             <Loader show={loadingAbsensi} />
@@ -57,11 +43,11 @@ export default function Riwayat({ navigation }) {
                             <View className='flex flex-row justify-between'>
                                 <View onTouchStart={() => setShowPickerFrom(true)} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
                                     <Text className='text-sky-700'>Dari:</Text>
-                                    <Text className='text-sky-700'>{moment(fromDate).format("DD-MMMM")}</Text>
+                                    <Text className='text-sky-700'>{formatDateMonth(fromDate)}</Text>
                                 </View>
                                 <View onTouchStart={() => setShowPickerTo(true)} className='border border-sky-700 rounded-lg p-2 w-[49%]'>
                                     <Text className='text-sky-700'>Sampai:</Text>
-                                    <Text className='text-sky-700'>{moment(toDate).format("DD-MMMM")}</Text>
+                                    <Text className='text-sky-700'>{formatDateMonth(toDate)}</Text>
                                 </View>
                             </View>
                             <View className='mt-2 border rounded-lg border-sky-700 p-2' onTouchStart={() => setFilter(true)}>
@@ -79,15 +65,13 @@ export default function Riwayat({ navigation }) {
                             }
                         </View>
                         <ScrollView className='bg-ye '>
-                            {riwayatAbsensi !== null ?
+                            {riwayatAbsensi &&
                                 Object.keys(riwayatAbsensi).length !== 0 ?
-                                    riwayatAbsensi?.absensi_mobile_users.map((d: any, i: any) => (
-                                        <CardRiwayat key={i} tanggal={moment(d.start).format("dddd DD MMMM YYYY")} masuk={d.start ? moment(d.start).format("HH:mm:ss") : "Tidak absen datang"} pulang={d.end ? moment(d.end).format("HH:mm:ss") : "Tidak absen pulang"} />
+                                    riwayatAbsensi?.absensi_mobile_users!.map((d, i: number) => (
+                                        <CardRiwayat key={i} tanggal={formatFullDate(d.start!)} masuk={d.start ? formatTime(d.start) : "Tidak absen datang"} pulang={d.end ? formatTime(d.end) : "Tidak absen pulang"} />
                                     ))
                                     :
                                     <></>
-                                 :
-                                <></>
                             }
                         </ScrollView>
                     </View>

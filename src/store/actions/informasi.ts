@@ -10,7 +10,7 @@ export const getAllInformation = createAsyncThunk(
                 return res.data
             }
         }
-        catch(err:any){
+        catch(err){
             return rejectWithValue(err.response.data.msg)
         }
     }

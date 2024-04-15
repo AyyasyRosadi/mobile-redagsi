@@ -1,50 +1,52 @@
+import { AbsensiAttributes, BulanPenggajianAttributes, GajiAttributes, InformationAttributes, ProfileAttributes, RiwayatAbsensiAttributes } from "../type"
+
 export interface Absensi {
-    loadingAbsensi : boolean
-    allAbsensi : any
-    riwayatAbsensi : any
-    msgAbsensi : any
-    status : string
-    hasAbsen : string
+    loadingAbsensi: boolean
+    allAbsensi: AbsensiAttributes
+    riwayatAbsensi: RiwayatAbsensiAttributes
+    msgAbsensi: string
+    status: string
+    hasAbsen: string
 }
 
 export interface Gaji {
-    allGaji : any
-    bulanPenggajian : any
-    loadingGaji : boolean
-    msgGaji : any
-    status : string
+    allGaji: GajiAttributes
+    bulanPenggajian: BulanPenggajianAttributes
+    loadingGaji: boolean
+    msgGaji: string
+    status: string
 }
 
 export interface GetGajiByBulan {
-    nupy:string
-    bulan:string
+    nupy: string
+    bulan: string
 }
 
 export interface AddAbsensi {
-    nupy : string
+    nupy: string
 }
 
 export interface Auth {
-    token : string
-    username : string
-    role : string
-    lembaga : string
-    nama : string
-    loadingAuth : boolean
-    msgAuth : any
-    status : string
+    token: string
+    username: string
+    role: string
+    lembaga: string
+    nama: string
+    loadingAuth: boolean
+    msgAuth: string
+    status: string
 }
 
 export interface Profile {
-    profile : any
-    loadingProfile : boolean
-    msgProfile : any
-    status:string
+    profile: ProfileAttributes
+    loadingProfile: boolean
+    msgProfile: string
+    status: string
 }
 
 export interface Information {
-    allInformation : any
-    loadingInformation : boolean
-    msgInformation : any
-    status:string
+    allInformation: InformationAttributes
+    loadingInformation: boolean
+    msgInformation: string
+    status: string
 } 

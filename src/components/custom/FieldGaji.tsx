@@ -1,14 +1,14 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-type TField = {
+type FieldGajiAttributes = {
     title: string,
     value: string | number
-    key? : any
-    list? : boolean
+    key?: number
+    list?: boolean
 }
 
-export default function FieldGaji({ title, value,key,list }: TField) {
+export default function FieldGaji({ title, value, key, list }: FieldGajiAttributes):ReactNode {
     return (
         <View key={key} className='flex flex-row mb-1'>
             <Text className='w-[3%] my-auto'>{list ? "-" : ""}</Text>

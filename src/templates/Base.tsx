@@ -1,26 +1,16 @@
-import { View, Text, Image, Platform, ScrollView } from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import arrow from "../assets/arrow.png";
-import { TBase } from "./TypeTemplates";
+import { View, Platform, ScrollView } from "react-native";
+import React, { ReactNode } from "react";
 
-const Base = ({children,navigateTo,scroll,title}:TBase) => {
-  const navigate = useNavigation<any>();
+type BaseAttributes = {
+  navigateTo?: string
+  title?: string
+  scroll?: boolean
+  children?: React.ReactNode
+}
+
+const Base = ({ children, scroll }: BaseAttributes):ReactNode => {
   return (
     <View>
-      {/* <View className=" flex flex-row h-[8vh] bg-[#c9a118]">
-        <View
-          onTouchStart={() => navigate.navigate(navigateTo)}
-          className="w-12"
-        >
-          <Image
-            on
-            source={arrow}
-            className="w-5 h-5 ml-4 my-auto rounded-full"
-          />
-        </View>
-        <Text className="my-auto text-2xl">{title}</Text>
-      </View> */}
       {scroll ? (
         <ScrollView
           className={`${Platform.OS === "android" ? "mt-0" : "mt-0"} bg-white`}

@@ -1,15 +1,14 @@
-import { View, Text, Image } from 'react-native'
-import React from 'react'
-import riwayat from "../assets/riwayat.png"
+import { View } from 'react-native'
+import React, { ReactNode } from 'react'
 import FieldTitle from '../components/custom/FieldTitle'
 
-type TCardRiwayat = {
+type CardRiwayatAttributes = {
     tanggal: string
     masuk: string
     pulang: string
 }
 
-export default function CardRiwayat({ masuk, pulang, tanggal }: TCardRiwayat) {
+export default function CardRiwayat({ masuk, pulang, tanggal }: CardRiwayatAttributes):ReactNode {
     return (
         <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4 flex flex-row my-1'>
             <View className='w-[80%]'>

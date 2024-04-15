@@ -1,51 +1,27 @@
 import { View, Text, KeyboardAvoidingView, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import masjid from "../assets/masjid.png";
 import InputField from '../components/fields/InputFields';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppThunkDispatch, RootState } from '../store';
 import { login } from '../store/actions/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authActions } from '../store/slices/auth';
 import Loader from '../templates/Loader';
 import { StatusBar } from 'expo-status-bar';
+import useSetStorage from '../hooks/useSetStorage';
+import useShowAlert from '../hooks/useShowAlert';
 
-export default function Login() {
+export default function Login():ReactNode {
     const dispatch = useDispatch<AppThunkDispatch>()
-    const { loadingAuth, token, username, lembaga, msgAuth, status, nama } = useSelector((state: RootState) => state.auth)
-    const navigation = useNavigation<any>()
-    const [name, setName] = useState<any>("");
-    const [pwd, setPwd] = useState("");
+    const { loadingAuth, status } = useSelector((state: RootState) => state.auth)
+    const [name, setName] = useState<string>("");
+    const [password, setPassword] = useState("");
     const [secure, setSecure] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
     const isLogin = () => {
-        dispatch(login({ username: name, password: pwd, sistem: "mobile" }))
+        dispatch(login({ username: name, password: password, sistem: "mobile" }))
     }
-    useEffect(() => {
-        if (status === "ERROR") {
-            setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false)
-                dispatch(authActions.clearStatus())
-            }, 2000)
-        }
-    }, [status]);
-    useEffect(() => {
-        const setStorage = async () => {
-            try {
-                if (token !== "" && username !== "") {
-                    let data = { token: token, nupy: username, nama: nama }
-                    await AsyncStorage.setItem("absensi", JSON.stringify(data))
-                    // navigation.navigate("Home",{status:false})
-                }
-            }
-            catch (err) {
-                throw err
-            }
-        }
-        setStorage()
-    }, [loadingAuth,])
+    const showAlert = useShowAlert(status === "SUCCES" ? "" : status, authActions.clearStatus())
+    useSetStorage()
     return (
         <KeyboardAvoidingView behavior="height" className="flex h-screen">
             <StatusBar />
@@ -74,9 +50,9 @@ export default function Login() {
                         <View className="relative">
                             <InputField
                                 secure={!secure}
-                                value={pwd}
+                                value={password}
                                 color="bg-slate-100 border border-slate-100 px-2"
-                                set={setPwd}
+                                set={setPassword}
                                 placeholder="Password"
                             />
                             <View

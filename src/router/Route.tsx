@@ -1,5 +1,4 @@
-import { View, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../UI/Login'
@@ -10,22 +9,20 @@ import Riwayat from '../UI/Riwayat'
 import Qr from '../UI/Qr'
 import Profile from '../UI/Profile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppThunkDispatch, RootState } from '../store'
-import { authActions } from '../store/slices/auth'
-import Picker from '../UI/Picker'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
-async function getStorage() {
-  const storage: any = await AsyncStorage.getItem("absensi")
-  let data = JSON.parse(storage)
+async function getStorage(): Promise<boolean> {
+  const checkStorage = await AsyncStorage.getItem("absensi")
+  let data = checkStorage && JSON.parse(checkStorage)
   if (data === null || Object.keys(data).length === 0) {
     return false
   }
   return true
 }
 
-export default function Route() {
-  const { token, loadingAuth,status } = useSelector((state: RootState) => state.auth)
+export default function Route(): ReactNode {
+  const { loadingAuth } = useSelector((state: RootState) => state.auth)
   const Stack = createNativeStackNavigator()
   const [check, setCheck] = useState(false)
   const auth = async () => {
@@ -34,7 +31,7 @@ export default function Route() {
   }
   useEffect(() => {
     auth()
-  }, [auth])
+  }, [auth, loadingAuth])
   return (
     <NavigationContainer ref={navigationRef}>
       {check ?

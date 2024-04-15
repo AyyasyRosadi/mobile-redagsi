@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GetGajiByBulan } from "../interfaces";
 import { Gaji } from "../interfaces";
 import { getBulanPenggajian, getGaji } from "../actions/gaji";
 
@@ -36,7 +35,7 @@ export const gajiStore = createSlice({
         state.loadingGaji = false;
         state.status = "ERROR";
         state.allGaji = {};
-        state.msgGaji = action.payload;
+        state.msgGaji = 'Invalid token';
       })
       .addCase(getBulanPenggajian.pending, (state) => {
         state.loadingGaji = true;
@@ -50,8 +49,8 @@ export const gajiStore = createSlice({
       .addCase(getBulanPenggajian.rejected, (state, action) => {
         state.loadingGaji = false;
         state.status = "ERROR";
-        state.allGaji = [];
-        state.msgGaji = action.payload;
+        state.allGaji = {};
+        state.msgGaji = 'Invalid token';
       });
   },
 });

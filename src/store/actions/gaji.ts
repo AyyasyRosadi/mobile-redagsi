@@ -11,7 +11,7 @@ export const getGaji = createAsyncThunk(
                 return res.data
             }
         }
-        catch(err:any){
+        catch(err){
             return rejectWithValue(err.response.data.msg)
         }
     }
@@ -25,7 +25,7 @@ export const getBulanPenggajian = createAsyncThunk(
                 return res.data
             }
         }
-        catch(err:any){
+        catch(err){
             return rejectWithValue(err.response.data.msg)
         }
     }

@@ -36,8 +36,8 @@ export const profileStore = createSlice({
         })
         .addCase(getProfile.rejected,(state,action)=>{
             state.loadingProfile = false
-            state.msgProfile = action.payload
             state.profile = {}
+            state.msgProfile = 'Invalid token'
         })
         .addCase(resetPassword.pending,(state)=>{
             state.loadingProfile = true
@@ -51,7 +51,7 @@ export const profileStore = createSlice({
         .addCase(resetPassword.rejected,(state,action)=>{
             state.loadingProfile = false
             state.status = "ERROR"
-            state.msgProfile = action.payload
+            state.msgProfile = 'Invalid token'
         })
 
     }

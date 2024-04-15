@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, ScrollView, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Menu from '../templates/Menu'
 import User from "../assets/user.png"
@@ -10,70 +10,52 @@ import iconLogout from "../assets/logout.png"
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '../store'
 import Loader from '../templates/Loader'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { authActions } from '../store/slices/auth'
-import { getProfile, resetPassword } from '../store/actions/profile'
+import { resetPassword } from '../store/actions/profile'
 import Alert from '../templates/Alert'
 import InputField from '../components/fields/InputFields'
 import { profileActions } from '../store/slices/profile'
 import { Platform } from 'react-native'
+import useRemoveStorage from '../hooks/useRemoveStorage'
+import useGetProfile from '../hooks/dispatch/useGetProfile'
+import useShowAlert from '../hooks/useShowAlert'
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation }): ReactNode {
     const dispatch = useDispatch<AppThunkDispatch>()
     const { loadingAuth, username, nama } = useSelector((state: RootState) => state.auth)
     const { profile, msgProfile, loadingProfile, status } = useSelector((state: RootState) => state.profile)
-    const [showReset, setShowReset] = useState(false)
-    const [checkPass, setCheckPass] = useState(false)
-    const [oldPass, setOldPass] = useState("")
-    const [newPass, setNewPass] = useState("")
-    const [msgCheck, setMsgCheck] = useState("")
-    const [modalVisible, setModalVisible] = useState(false)
-    const removeStorage = async () => {
-        await AsyncStorage.removeItem("absensi")
-    }
+    const [showReset, setShowReset] = useState<boolean>(false)
+    const [checkPassword, setCheckPassword] = useState<boolean>(false)
+    const [oldPassword, setOldPassword] = useState<string>("")
+    const [newPassword, setNewPassword] = useState<string>("")
+    const [messageCheckPassword, setMessageCheckPassword] = useState<string>("")
     const out = async () => {
-        await removeStorage()
+        await useRemoveStorage('absensi')
         dispatch(authActions.clearAuth())
-
     }
     const reset = () => {
-        if (newPass.length < 8) {
-            setCheckPass(true)
-            setMsgCheck("Password baru minimal 8 karakter")
+        if (newPassword.length < 8) {
+            setCheckPassword(true)
+            setMessageCheckPassword("Password baru minimal 8 karakter")
         }
         else {
-            dispatch(resetPassword({ nama: nama, username: username, old_pass: oldPass, new_pass: newPass }))
-            setOldPass("")
-            setNewPass("")
+            dispatch(resetPassword({ nama: nama, username: username, old_pass: oldPassword, new_pass: newPassword }))
+            setOldPassword("")
+            setNewPassword("")
             setShowReset(false)
         }
     }
+    useGetProfile(navigation, username)
+    const showAlert = useShowAlert(status, profileActions.clearStatus())
     useEffect(() => {
-        const focusHandler = navigation.addListener("focus", () => {
-            if (username) {
-                dispatch(getProfile(username))
-            }
-        })
-        return focusHandler
-    }, [navigation, username])
-    useEffect(() => {
-        if (status === "SUCCES" || status === "ERROR") {
-            setModalVisible(true)
-            setTimeout(() => {
-                setModalVisible(false)
-                dispatch(profileActions.clearStatus())
-            }, 2000)
+        if (oldPassword === "" && newPassword !== "") {
+            setCheckPassword(true)
+            setMessageCheckPassword("Password lama harus di isi")
         }
-    }, [status])
-    useEffect(() => {
-        if (oldPass === "" && newPass !== "") {
-            setCheckPass(true)
-            setMsgCheck("Password lama harus di isi")
-        }
-    }, [newPass])
+    }, [newPassword])
     return (
         <SafeAreaView>
-            <Alert show={modalVisible} msg={msgProfile} />
+            <Alert show={showAlert} msg={typeof msgProfile === 'string' ? msgProfile : ''} />
             <Loader show={loadingAuth || loadingProfile} />
             <StatusBar backgroundColor="#ffff" />
             <View className={`h-screen bg-slate-50 absolute top-[0vh] w-screen ${Platform?.OS === "android" ? "mt-[2vh]" : ""}`}>
@@ -88,13 +70,16 @@ export default function Profile({ navigation }) {
                                     <Text className='text-xl font-bold'>Profile PTK</Text>
                                 </View>
                             </View>
+                            <View className='bg-yellow-400 text-center justify-normal'>
+                                <Text className='text-gray-50 bg-yellow-400'>Just find out !</Text>
+                            </View>
                             <View className='bg-slate-400 w-full h-[2px] mt-2 mb-4'></View>
                             <View className='mt-1 ml-1'>
-                                <FieldTitle title='Nupy' value={profile?.nupy} />
-                                <FieldTitle title='Nama' value={profile?.nama} />
-                                <FieldTitle title='Satker' value={profile?.statusPtk?.listSatker?.nama_satker} />
-                                <FieldTitle title='Lembaga' value={profile?.statusPtk?.lembaga?.nama} />
-                                <FieldTitle title='Tugas Pokok' value={profile?.statusPtk?.listTugasPokok?.nama_tugasPokok} />
+                                <FieldTitle title='Nupy' value={profile?.nupy!} />
+                                <FieldTitle title='Nama' value={profile?.nama!} />
+                                <FieldTitle title='Satker' value={profile?.statusPtk?.listSatker?.nama_satker!} />
+                                <FieldTitle title='Lembaga' value={profile?.statusPtk?.lembaga?.nama!} />
+                                <FieldTitle title='Tugas Pokok' value={profile?.statusPtk?.listTugasPokok?.nama_tugasPokok!} />
                             </View>
                         </View>
                         <View className='bg-slate-200 w-[90%] mx-auto rounded-xl shadow-xl p-4'>
@@ -116,11 +101,11 @@ export default function Profile({ navigation }) {
                                 </View>
                                 <View className={`flex flex-col space-y-2 w-[100%] ${showReset ? "block" : "hidden"}`}>
                                     <View className='w-[100%]'>
-                                        <InputField title='Password lama' value={oldPass} set={setOldPass} />
+                                        <InputField title='Password lama' value={oldPassword} set={setOldPassword} />
                                     </View>
                                     <View className='w-[100%]'>
-                                        <InputField title='Password baru' value={newPass} set={setNewPass} />
-                                        <Text className='text-red-700'>{checkPass ? `${msgCheck}` : ""}</Text>
+                                        <InputField title='Password baru' value={newPassword} set={setNewPassword} />
+                                        <Text className='text-red-700'>{checkPassword ? `${messageCheckPassword}` : ""}</Text>
                                     </View>
                                     <View className='flex flex-row justify-end  w-[100%]'>
                                         <View className='bg-sky-600  w-[25%] p-2 rounded-lg' onTouchStart={reset}>
