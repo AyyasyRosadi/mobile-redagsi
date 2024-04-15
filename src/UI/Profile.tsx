@@ -70,9 +70,6 @@ export default function Profile({ navigation }): ReactNode {
                                     <Text className='text-xl font-bold'>Profile PTK</Text>
                                 </View>
                             </View>
-                            <View className='bg-yellow-400 text-center justify-normal'>
-                                <Text className='text-gray-50 bg-yellow-400'>Just find out !</Text>
-                            </View>
                             <View className='bg-slate-400 w-full h-[2px] mt-2 mb-4'></View>
                             <View className='mt-1 ml-1'>
                                 <FieldTitle title='Nupy' value={profile?.nupy!} />

@@ -9,7 +9,7 @@ import { getAllInformation } from '../store/actions/informasi'
 import useGetStorage from './useGetStorage'
 import { ParamListBase, RouteProp } from '@react-navigation/native'
 
-export default function useAbsensiAndInformation(route: RouteProp<{ params: { status: boolean } }>, navigation: any, danger: boolean, username: string): void {
+export default function useAbsensiAndInformation(route: RouteProp<{ params: { status: boolean } }>, navigation:{addListener:(trigger:string,func:()=>void)=>void}, danger: boolean, username: string): void {
     const dispatch = useDispatch<AppThunkDispatch>()
     const { allAbsensi } = useSelector((state: RootState) => state.absensi)
     const setAuthenticationStorage = async () => {

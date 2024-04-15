@@ -5,6 +5,7 @@ import { authActions } from '../store/slices/auth'
 import useRemoveStorage from './useRemoveStorage'
 import { absensiActions } from '../store/slices/absensi'
 import useGetStorage from './useGetStorage'
+import api from '../api/http'
 
 export default function useCheckStorage(route: { params: { status: boolean } }): void {
     const dispatch = useDispatch<AppThunkDispatch>()
@@ -13,6 +14,7 @@ export default function useCheckStorage(route: { params: { status: boolean } }):
         const data = await useGetStorage('absensi')
         if (data && (JSON.parse(data) !== null || Object.keys(JSON.parse(data)).length !== 0)) {
             dispatch(authActions.setAuth(JSON.parse(data)))
+            api.defaults.headers.common["Authorization"] = `Bearer ${JSON.parse(data).token}`;
         }
     }
     const checkStorage = async () => {

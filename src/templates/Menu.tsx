@@ -31,7 +31,7 @@ export default function Menu({ index }: MenuAttributes): ReactNode {
           <View className={`w-full h-[5%] bg-white my-[5%] ${params.routeNames[index] === "Riwayat" ? "block" : "hidden"}`}></View>
         </View>
         <View className="-mt-[10%] bg-sky-600 rounded-full p-2 shadow-2xl shadow-white" style={{ width: windowWidth / 4.8, height: windowWidth / 4.8 }} onTouchStart={() => navigate.replace("Home")}>
-          <Image source={iconAbsensi} className="w-9 h-9 mx-auto" />
+          <Image source={iconAbsensi} className="w-8 h-8 mx-auto" />
           <Text className="text-center text-white mt-1">Absensi</Text>
           <View className={`w-[70%] mx-auto h-[5%] bg-white my-[5%] ${params.routeNames[index] === "Home" ? "block" : "hidden"}`}></View>
         </View>

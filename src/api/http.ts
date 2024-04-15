@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from "axios"
+import axios from "axios"
 import { CommonActions } from "@react-navigation/native";
 import { navigationRef } from "../router/RootNavigation";
 
@@ -10,19 +10,6 @@ const api = axios.create({
 })
 
 
-let store;
-export const injectStore = (_store) => {
-    store = _store
-}
-
-api.interceptors.request.use((req:any) => {
-    if (!req.url.includes("/login")) {
-        req.headers = {
-            Authorization: `Bearer ${store.getState().auth.token}`
-        }
-    }
-    return req;
-})
 api.interceptors.response.use(
     (res) => {
         return res

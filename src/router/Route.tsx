@@ -33,7 +33,7 @@ export default function Route(): ReactNode {
     auth()
   }, [auth, loadingAuth])
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer ref={navigationRef} >
       {check ?
         <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }} >
           <Stack.Screen name="Home" component={Home} />
